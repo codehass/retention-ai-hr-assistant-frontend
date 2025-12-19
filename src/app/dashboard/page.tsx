@@ -1,42 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import AuthPage from "@/src/components/AuthPage";
 import EmployeeForm from "@/src/components/EmployeeForm";
 import PredictionResultCard from "@/src/components/PredictionResultCard";
 import RetentionPlanCard from "@/src/components/RetentionPlanCard";
-// import { predictChurn, generateRetentionPlan } from "@/src/services/aiService";
+import { useSteps } from "@/src/context/StepContext";
+
+// Import both services
 import {
-	EmployeeProfile,
-	PredictionResult,
-	RetentionPlan,
-	User,
-} from "@/src/lib/types";
+	predictChurn,
+	generateRetentionPlan,
+} from "@/src/services/authService";
 import {
+	GENDER,
+	MARITAL_STATUS,
+	EDUCATION_FIELDS,
 	DEPARTMENTS,
 	JOB_ROLES,
 	BUSINESS_TRAVEL,
-	EDUCATION_FIELDS,
-	GENDER,
-	MARITAL_STATUS,
 } from "@/src/lib/constants";
-
-// const STEPS = [
-// 	{ id: 0, title: "Personal Details" },
-// 	{ id: 1, title: "Job Details" },
-// 	{ id: 2, title: "Work History" },
-// 	{ id: 3, title: "Satisfaction Metrics" },
-// 	{ id: 4, title: "Analysis Summary" },
-// ];
+import { EmployeeProfile } from "@/src/lib/types";
 
 export default function DashboardPage() {
-	const [user, setUser] = useState<User | null>(null);
-
-	const [currentStep, setCurrentStep] = useState(0);
-	const [prediction, setPrediction] = useState<PredictionResult | null>(null);
-	const [retentionPlan, setRetentionPlan] = useState<RetentionPlan | null>(
-		null
-	);
+	const { currentStep, setCurrentStep } = useSteps();
+	const [prediction, setPrediction] = useState<any | null>(null);
+	const [retentionPlan, setRetentionPlan] = useState<any | null>(null);
 	const [isPredicting, setIsPredicting] = useState(false);
 	const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
 
@@ -65,50 +53,34 @@ export default function DashboardPage() {
 		performanceRating: 3,
 	});
 
-	const handleLogin = (username: string) => {
-		setUser({ username, token: "mock-jwt-token-xyz" });
-	};
-
-	const handleLogout = () => {
-		setUser(null);
-		setPrediction(null);
-		setRetentionPlan(null);
-		setCurrentStep(0);
-	};
-
 	const handlePrediction = async () => {
 		setIsPredicting(true);
-		// try {
-		// 	const result = await predictChurn(formData);
-		// 	setPrediction(result);
-		setCurrentStep(4);
-		// } finally {
-		// 	setIsPredicting(false);
-		// }
+		try {
+			const result = await predictChurn(formData);
+			setPrediction(result);
+			setCurrentStep(4);
+		} catch (err) {
+			alert("Error calculating retention risk.");
+			console.log(err);
+		} finally {
+			setIsPredicting(false);
+		}
 	};
 
 	const handleGeneratePlan = async () => {
-		// if (!prediction) return;
-		// setIsGeneratingPlan(true);
-		// try {
-		// 	const plan = await generateRetentionPlan(
-		// 		formData,
-		// 		prediction.churnProbability
-		// 	);
-		// 	setRetentionPlan(plan);
-		// } finally {
-		// 	setIsGeneratingPlan(false);
-		// }
-	};
+		if (!prediction?.prediction_id) return;
 
-	// 🔐 Auth guard
-	// if (!user) {
-	// 	return (
-	// 		<AuthPage
-	// 		// onLogin={handleLogin}
-	// 		/>
-	// 	);
-	// }
+		setIsGeneratingPlan(true);
+		try {
+			const plan = await generateRetentionPlan(prediction.prediction_id);
+			console.log("Plan API Response:", plan);
+			setRetentionPlan(plan);
+		} catch (err) {
+			alert("Error generating plan.");
+		} finally {
+			setIsGeneratingPlan(false);
+		}
+	};
 
 	return (
 		<>
@@ -117,26 +89,31 @@ export default function DashboardPage() {
 					currentStep={currentStep}
 					formData={formData}
 					setFormData={setFormData}
-					onNext={() => setCurrentStep((c) => c + 1)}
-					onPrev={() => setCurrentStep((c) => c - 1)}
+					onNext={() => setCurrentStep((c: number) => c + 1)}
+					onPrev={() => setCurrentStep((c: number) => c - 1)}
 					onSubmit={handlePrediction}
 					isLoading={isPredicting}
 				/>
 			) : (
-				<>
+				<div className="space-y-6">
 					{prediction && (
 						<PredictionResultCard
-							result={prediction}
+							result={{
+								churnProbability: prediction.probability,
+								riskLevel: prediction.prediction,
+							}}
 							onGeneratePlan={handleGeneratePlan}
 							isGeneratingPlan={isGeneratingPlan}
 							hasPlan={!!retentionPlan}
 							employeeName="Analysis Subject #001"
-							employeeId={`ID-${Math.random() * 10000}`}
+							employeeId={`ID-${prediction.employee_id}`}
 						/>
 					)}
 
-					{retentionPlan && <RetentionPlanCard plan={retentionPlan} />}
-				</>
+					{retentionPlan && (
+						<RetentionPlanCard plan={retentionPlan.plan_content} />
+					)}
+				</div>
 			)}
 		</>
 	);
