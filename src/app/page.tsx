@@ -1,4 +1,4 @@
-import HomePage from "@/src/components/HomePage";
+import AuthForm from "@/src/components/AuthPage";
 export default function Home() {
-	return <HomePage />;
+	return <AuthForm />;
 }
