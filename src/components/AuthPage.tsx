@@ -23,7 +23,6 @@ const AuthPage = () => {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		setLoading(true);
-		// Simulate API Call
 	};
 
 	return (
@@ -103,8 +102,7 @@ const AuthPage = () => {
 				</CardContent>
 				<CardFooter className="flex flex-col gap-2 border-t pt-4">
 					<p className="text-xs text-center text-muted-foreground">
-						Protected by JWT Authentication. Industrialized on Docker &
-						PostgreSQL.
+						HR platform
 					</p>
 				</CardFooter>
 			</Card>
