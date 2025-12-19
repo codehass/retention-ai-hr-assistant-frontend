@@ -103,7 +103,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
 	const handleRadioChange = (name: string, value: string) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
-
+	const isLastStep = currentStep === 3;
 	return (
 		<div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
 			<Card>
@@ -423,27 +423,24 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
 
 					<div className="flex items-center justify-between pt-6">
 						<Button
+							type="button" // Always specify type="button" to prevent accidental form submits
 							variant="ghost"
 							onClick={onPrev}
-							disabled={currentStep === 0}
+							disabled={currentStep === 0 || isLoading}
 							className={currentStep === 0 ? "invisible" : ""}
 						>
 							<ArrowLeft className="mr-2 h-4 w-4" /> Back
 						</Button>
 
-						{currentStep < 3 ? (
-							<Button onClick={onNext}>
-								Next Step <ArrowRight className="ml-2 h-4 w-4" />
-							</Button>
-						) : (
+						{isLastStep ? (
 							<Button
 								onClick={onSubmit}
 								disabled={isLoading}
-								className="bg-primary hover:bg-primary/90"
+								className="bg-primary hover:bg-primary/90 min-w-[140px]"
 							>
 								{isLoading ? (
 									<>
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 										Analyzing...
 									</>
 								) : (
@@ -451,6 +448,10 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
 										<Sparkles className="mr-2 h-4 w-4" /> Predict Risk
 									</>
 								)}
+							</Button>
+						) : (
+							<Button type="button" onClick={onNext}>
+								Next Step <ArrowRight className="ml-2 h-4 w-4" />
 							</Button>
 						)}
 					</div>
