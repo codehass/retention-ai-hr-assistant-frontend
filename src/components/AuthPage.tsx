@@ -14,8 +14,10 @@ import {
 } from "./ui/card";
 import { Loader2, Lock } from "lucide-react";
 import { login, register } from "@/src/services/authService";
+import { useRouter } from "next/navigation";
 
 const AuthPage = () => {
+	const router = useRouter();
 	const [isLogin, setIsLogin] = useState(true);
 	const [username, setUsername] = useState("hr_manager");
 	const [password, setPassword] = useState("secure password");
@@ -36,6 +38,8 @@ const AuthPage = () => {
 			} else {
 				await register(username, email, password);
 			}
+			router.push("/dashboard");
+			router.refresh();
 		} catch (err) {
 			if (err instanceof Error) {
 				setError(err.message);
