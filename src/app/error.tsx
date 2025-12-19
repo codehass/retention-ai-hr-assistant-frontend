@@ -8,7 +8,6 @@ interface ErrProps {
 }
 
 export default function ErrorPage({ err, reset }: ErrProps) {
-	// Log the error to an error reporting service like Sentry or LogRocket
 	useEffect(() => {
 		console.error("App-level Error Caught:", err);
 	}, [err]);

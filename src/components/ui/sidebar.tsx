@@ -26,9 +26,7 @@ export function SidebarProvider({ children }: { children?: React.ReactNode }) {
 
 	return (
 		<SidebarContext.Provider value={{ open, setOpen, toggleSidebar }}>
-			<div className="flex min-h-screen w-full bg-background overflow-hidden">
-				{children}
-			</div>
+			<div className="w-full bg-background overflow-hidden">{children}</div>
 		</SidebarContext.Provider>
 	);
 }
