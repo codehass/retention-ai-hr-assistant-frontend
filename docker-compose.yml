@@ -1,0 +1,66 @@
+services:
+  frontend_app:
+    container_name: frontend_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    env_file:
+      - ./.env
+    environment:
+      BACKEND_URL: http://backend_app:${BACKEND_INTERNAL_PORT:-8000}
+    depends_on:
+      backend_app:
+        condition: service_started
+    networks:
+      - fullstack-network
+    restart: always
+
+  backend_app:
+    container_name: backend_app
+    build:
+      context: ../ai-orchestrator-backend
+      dockerfile: Dockerfile
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    env_file:
+      - ../ai-orchestrator-backend/.env
+    environment:
+      FRONTEND_URL: http://frontend_app:${FRONTEND_INTERNAL_PORT:-3000}
+      DATABASE_HOST: database
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - fullstack-network
+    restart: always
+
+  database:
+    container_name: database
+    image: postgres:13-alpine
+    env_file:
+      - ./.env
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "${DATABASE_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fullstack-network
+    restart: always
+
+networks:
+  fullstack-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
