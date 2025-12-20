@@ -1,8 +1,7 @@
 <a name="readme-top"></a>
 
 <div align="center">
-  <img src="public/logo-dark.png" alt="logo" width="140"  height="auto" />
-
+  <img src="public/logo-dark.png" alt="logo" width="140" height="auto" />
   <br/>
 </div>
 
@@ -24,33 +23,35 @@
 - [⭐️ Show your support](#support)
 - [📝 License](#license)
 
-# 📖 Project title <a name="about-project"></a>
+# 📖 RetentionAI – HR Assistant Frontend <a name="about-project"></a>
 
-Add a brief description of your project here
+RetentionAI Frontend is a responsive HR dashboard that allows HR users to authenticate, submit employee profiles, visualize attrition risk predictions, and automatically display AI-generated retention plans when a high risk of departure is detected.
+
+This interface is designed to support data-driven HR decision-making in a clear, intuitive, and business-oriented way.
 
 ## 🛠 Built With <a name="built-with"></a>
 
 ### Tech Stack <a name="tech-stack"></a>
 
-  <ul>
-    <li><a href="https://nextjs.org/">Next.js</a></li>
-    <li><a href="https://www.tailwindcss.com/">Tailwind CSS</a></li>
-    <li><a href="https://styled-components.com/">Styled-components</a></li>
-    <li><a href="https://supabase.com/">Supabase</a></li>
-  </ul>
+<ul>
+  <li><a href="https://nextjs.org/">Next.js (React)</a></li>
+  <li><a href="https://tailwindcss.com/">Tailwind CSS</a></li>
+  <li>JavaScript / TypeScript</li>
+  <li>REST API (FastAPI Backend)</li>
+</ul>
 
 ### Key Features <a name="key-features"></a>
 
-- **Feature one**
-- **Feature two**
-- **Feature three**
-- **Feature four**
+- **JWT-based authentication for HR users**
+- **Employee profile input form**
+- **Visualization of attrition risk probability**
+- **Automatic display of AI-generated retention plans**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 🚀 Live Demo <a name="live-demo"></a>
 
-- [Live Demo Link](link to deployed project)
+- Live demo coming soon (Docker deployment)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -60,10 +61,10 @@ To get a local copy up and running, follow these steps.
 
 ### Setup
 
-Clone this repository to your desired folder:
+Clone this repository:
 
 ```sh
-  git clone git@github.com:codehass/front-end-next-template.git
+git clone https://github.com/codehass/retention-ai-hr-assistant-frontend.git
 ```
 
 ### Install
@@ -71,7 +72,7 @@ Clone this repository to your desired folder:
 Install this project with:
 
 ```sh
-  cd front-end-next-template
+  cd retention-ai-hr-assistant-frontend
   npm install
 ```
 
@@ -89,6 +90,24 @@ To run the project, execute the following command:
   npm run dev
 ```
 
+### Run with Docker Compose
+
+To run the frontend and backend together, clone both repositories into the same parent directory:
+
+```
+retention-ai/
+├── retention-ai-hr-assistant-frontend/
+└── retention-ai-hr-assistant-backend/
+```
+
+The [RetentionAI Frontend](https://github.com/codehass/retention-ai-hr-assistant-frontend)
+
+- Then run:
+
+```
+docker compose up --build
+```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 👥 Author <a name="authors"></a>
@@ -103,10 +122,9 @@ To run the project, execute the following command:
 
 ## 🔭 Future Features <a name="future-features"></a>
 
-- **Feature one**
-- **Feature two**
-- **Feature three**
-- **Feature four**
+- **MLflow experiment tracking**
+- **CI/CD with GitHub Actions**
+- **Role-based access control**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -129,3 +147,4 @@ Join us in supporting our project to improve cabin management in hotels! Your he
 This project is [MIT](./MIT.md) licensed.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+```
