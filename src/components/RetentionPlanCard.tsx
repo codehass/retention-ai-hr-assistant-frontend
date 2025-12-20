@@ -2,9 +2,8 @@
 
 import React from "react";
 import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { Bot, Download } from "lucide-react";
+import { Bot } from "lucide-react";
 
 interface RetentionPlanCardProps {
 	plan: string[];
@@ -52,15 +51,6 @@ const RetentionPlanCard: React.FC<RetentionPlanCardProps> = ({ plan }) => {
 							No specific actions generated.
 						</p>
 					)}
-				</div>
-
-				<div className="mt-6 flex justify-end">
-					<Button
-						variant="ghost"
-						className="text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50"
-					>
-						<Download className="mr-2 h-4 w-4" /> Export to PDF
-					</Button>
 				</div>
 			</CardContent>
 		</Card>

@@ -6,7 +6,6 @@ import PredictionResultCard from "@/src/components/PredictionResultCard";
 import RetentionPlanCard from "@/src/components/RetentionPlanCard";
 import { useSteps } from "@/src/context/StepContext";
 
-// Import both services
 import {
 	predictChurn,
 	generateRetentionPlan,
