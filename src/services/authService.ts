@@ -14,12 +14,22 @@ export async function login(username: string, password: string) {
 		body: formData.toString(),
 	});
 
+	const text = await res.text();
+	
 	if (!res.ok) {
-		const error = await res.json();
-		throw new Error(error.detail || "Login failed");
+		try {
+			const error = JSON.parse(text);
+			throw new Error(error.detail || "Login failed");
+		} catch {
+			throw new Error(text || "Login failed");
+		}
 	}
 
-	return res.json();
+	try {
+		return JSON.parse(text);
+	} catch {
+		throw new Error("Invalid response from server");
+	}
 }
 
 export async function register(
@@ -40,32 +50,40 @@ export async function register(
 		}),
 	});
 
+	const text = await res.text();
+	
 	if (!res.ok) {
-		const error = await res.json();
-		throw new Error(error.detail || "Registration failed");
+		try {
+			const error = JSON.parse(text);
+			throw new Error(error.detail || "Registration failed");
+		} catch {
+			throw new Error(text || "Registration failed");
+		}
 	}
 
-	return res.json();
+	try {
+		return JSON.parse(text);
+	} catch {
+		throw new Error("Invalid response from server");
+	}
 }
 
 export const logout = async () => {
 	try {
 		const response = await fetch("/api/v1/auth/logout", {
 			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
 			credentials: "include",
 		});
 
-		if (!response.ok) {
-			throw new Error("Logout failed");
+		if (response.ok) {
+			return { message: "Logged out successfully" };
 		}
-
-		return await response.json();
+		
+		console.error("Logout failed with status:", response.status);
+		throw new Error("Logout failed");
 	} catch (error) {
 		console.error("Logout error:", error);
-		throw error;
+		return { message: "Logged out" };
 	}
 };
 
@@ -73,51 +91,77 @@ export const predictChurn = async (
 	data: EmployeeProfile
 ): Promise<PredictionResult> => {
 	const payload = {
-		Age: data.age,
-		JobLevel: data.jobLevel,
-		MonthlyIncome: data.monthlyIncome,
-		StockOptionLevel: data.stockOptionLevel,
-		TotalWorkingYears: data.totalWorkingYears,
-		YearsAtCompany: data.yearsAtCompany,
-		YearsInCurrentRole: data.yearsInCurrentRole,
-		YearsWithCurrManager: data.yearsWithCurrManager,
-		Education: data.education,
-		EnvironmentSatisfaction: data.environmentSatisfaction,
-		JobInvolvement: data.jobInvolvement,
-		JobSatisfaction: data.jobSatisfaction,
-		PerformanceRating: data.performanceRating,
-		RelationshipSatisfaction: data.relationshipSatisfaction,
-		WorkLifeBalance: data.workLifeBalance,
-		BusinessTravel: data.businessTravel,
-		Department: data.department,
-		EducationField: data.educationField,
-		Gender: data.gender,
-		JobRole: data.jobRole,
-		MaritalStatus: data.maritalStatus,
-		OverTime: data.overTime,
+		age: data.age,
+		job_level: data.jobLevel,
+		monthly_income: data.monthlyIncome,
+		stock_option_level: data.stockOptionLevel,
+		total_working_years: data.totalWorkingYears,
+		years_at_company: data.yearsAtCompany,
+		years_in_current_role: data.yearsInCurrentRole,
+		years_with_curr_manager: data.yearsWithCurrManager,
+		education: data.education,
+		environment_satisfaction: data.environmentSatisfaction,
+		job_involvement: data.jobInvolvement,
+		job_satisfaction: data.jobSatisfaction,
+		performance_rating: data.performanceRating,
+		relationship_satisfaction: data.relationshipSatisfaction,
+		work_life_balance: data.workLifeBalance,
+		business_travel: data.businessTravel,
+		department: data.department,
+		education_field: data.educationField,
+		gender: data.gender,
+		job_role: data.jobRole,
+		marital_status: data.maritalStatus,
+		over_time: data.overTime,
 	};
 
-	const response = await fetch("/api/v1/predict/predict-attrition", {
+	const response = await fetch("/api/v1/predict/attrition", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify(payload),
 		credentials: "include",
 	});
 
+	const text = await response.text();
+	
 	if (!response.ok) {
-		throw new Error("Failed to get prediction from server");
+		try {
+			const error = JSON.parse(text);
+			throw new Error(error.detail || "Failed to get prediction from server");
+		} catch {
+			throw new Error(text || "Failed to get prediction from server");
+		}
 	}
 
-	return await response.json();
+	try {
+		return JSON.parse(text);
+	} catch {
+		throw new Error("Invalid response from server");
+	}
 };
 
 export const generateRetentionPlan = async (predictionId: number) => {
-	const response = await fetch("/api/v1/predict/generate-retention-plan", {
+	const response = await fetch("/api/v1/predict/retention-plan", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({ prediction_id: predictionId }),
 		credentials: "include",
 	});
-	if (!response.ok) throw new Error("Plan generation failed");
-	return await response.json();
+
+	const text = await response.text();
+	
+	if (!response.ok) {
+		try {
+			const error = JSON.parse(text);
+			throw new Error(error.detail || "Plan generation failed");
+		} catch {
+			throw new Error(text || "Plan generation failed");
+		}
+	}
+
+	try {
+		return JSON.parse(text);
+	} catch {
+		throw new Error("Invalid response from server");
+	}
 };

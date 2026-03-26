@@ -96,7 +96,7 @@ const PredictionResultCard: React.FC<PredictionResultCardProps> = ({
 								<Edit className="mr-2 h-4 w-4" /> Edit
 							</Button>
 
-							{
+							{percentage >= 50 && !hasPlan && (
 								<Button
 									onClick={onGeneratePlan}
 									disabled={isGeneratingPlan}
@@ -109,7 +109,7 @@ const PredictionResultCard: React.FC<PredictionResultCardProps> = ({
 									)}
 									Generate Plan
 								</Button>
-							}
+							)}
 						</div>
 					</div>
 				</CardContent>

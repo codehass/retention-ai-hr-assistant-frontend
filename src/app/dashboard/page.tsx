@@ -67,15 +67,16 @@ export default function DashboardPage() {
 	};
 
 	const handleGeneratePlan = async () => {
-		if (!prediction?.prediction_id) return;
+		if (!prediction?.id) return;
 
 		setIsGeneratingPlan(true);
 		try {
-			const plan = await generateRetentionPlan(prediction.prediction_id);
+			const plan = await generateRetentionPlan(prediction.id);
 			console.log("Plan API Response:", plan);
 			setRetentionPlan(plan);
 		} catch (err) {
-			alert("Error generating plan.");
+			const errorMessage = err instanceof Error ? err.message : "Error generating plan";
+			alert(errorMessage);
 		} finally {
 			setIsGeneratingPlan(false);
 		}
@@ -98,8 +99,8 @@ export default function DashboardPage() {
 					{prediction && (
 						<PredictionResultCard
 							result={{
-								churnProbability: prediction.probability,
-								riskLevel: prediction.prediction,
+								churnProbability: prediction.churn_probability,
+								riskLevel: prediction.attrition === 1 ? "High" : "Low",
 							}}
 							onGeneratePlan={handleGeneratePlan}
 							isGeneratingPlan={isGeneratingPlan}
